@@ -1,0 +1,61 @@
+{
+  "name": "ims-exam-pctu",
+  "version": "1.0.0",
+  "description": "IMS EXAM PCTU - Trình duyệt thi an toàn cho PCTU",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:win64": "electron-builder --win --x64",
+    "build:win32": "electron-builder --win --ia32",
+    "build:win64:no-sign": "cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64 --config.win.sign=false"
+  },
+  "keywords": [
+    "exam",
+    "browser",
+    "lockdown",
+    "secure"
+  ],
+  "author": "PCTU",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "build": {
+    "appId": "com.pctu.ims-exam-pctu",
+    "productName": "IMS EXAM PCTU",
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "assets/logo192.png",
+      "sign": false,
+      "signingHashAlgorithms": [],
+      "certificateFile": null,
+      "certificatePassword": null,
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "IMS-EXAM-PCTU-${version}-${arch}.exe"
+    },
+    "directories": {
+      "output": "dist"
+    }
+  }
+}

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMS EXAM PCTU - Xác nhận</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            width: 100%;
+            min-height: 100vh;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            -webkit-app-region: drag; /* Allow window dragging */
+        }
+
+        /* Close button - no drag zone */
+        .close-button {
+            -webkit-app-region: no-drag !important;
+            position: fixed !important;
+            top: 12px !important;
+            right: 12px !important;
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50%;
+            background: #ff5f57 !important;
+            border: none;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999999 !important;
+            pointer-events: auto !important;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            outline: none;
+        }
+
+        .close-button:hover {
+            background: #e0443e;
+            transform: scale(1.1);
+        }
+
+        .close-button:active {
+            transform: scale(0.95);
+        }
+
+        .close-button::before {
+            content: '×';
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .container {
+            background: #ffffff;
+            width: 100%;
+            min-height: 100vh;
+            padding: 50px 40px 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: visible;
+            box-sizing: border-box;
+        }
+
+        .icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Loading spinner for safety check */
+        .safety-loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ff9500;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            color: #1d1d1f;
+            margin-bottom: 8px;
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #86868b;
+            margin-bottom: 32px;
+            font-size: 17px;
+            font-weight: 400;
+        }
+
+        .status-box {
+            background: #f5f5f7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 0 0 24px;
+            text-align: left;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 15px;
+            color: #1d1d1f;
+        }
+
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .status-icon.success {
+            background: #34c759;
+            color: white;
+        }
+
+        .status-icon.checking {
+            background: #ff9500;
+            color: white;
+        }
+
+        .status-icon.error {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .button {
+            -webkit-app-region: no-drag;
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 17px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-family: inherit;
+        }
+
+        .button:hover {
+            background: #0051d5;
+            transform: scale(1.02);
+        }
+
+        .button:active {
+            transform: scale(0.98);
+        }
+
+        .button:disabled {
+            background: #d1d1d6;
+            color: #8e8e93;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .warning {
+            background: #fff4e6;
+            border: 1px solid #ff9500;
+            padding: 16px;
+            margin: 0 0 16px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 15px;
+            color: #1d1d1f;
+            line-height: 1.5;
+        }
+
+        .warning strong {
+            color: #ff9500;
+            font-weight: 600;
+        }
+
+        .info {
+            background: #e8f4f8;
+            border: 1px solid #007AFF;
+            padding: 16px;
+            margin: 0 0 16px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 15px;
+            color: #1d1d1f;
+            line-height: 1.5;
+        }
+
+        .info strong {
+            color: #007AFF;
+            font-weight: 600;
+        }
+
+        #safety-issues-box ul {
+            margin-top: 12px;
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+        #safety-issues-box li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <button class="close-button" id="close-btn" title="Đóng và chạy ẩn"></button>
+    <div class="container">
+        <div class="icon">
+            <img src="assets/logo192.png" alt="IMS EXAM PCTU" />
+        </div>
+        <h1>IMS EXAM PCTU</h1>
+        <p class="subtitle">Phần mềm thi an toàn</p>
+
+        <div class="status-box">
+            <div class="status-item">
+                <div class="status-icon checking" id="server-status-icon">⏳</div>
+                <span id="server-status-text">Đang kiểm tra kết nối với server...</span>
+            </div>
+            <div class="status-item">
+                <div class="status-icon checking" id="health-status-icon">⏳</div>
+                <span id="health-status-text">Đang kiểm tra health check server...</span>
+            </div>
+            <div class="status-item">
+                <div class="status-icon checking" id="safety-status-icon">⏳</div>
+                <span id="safety-status-text">
+                    <span class="safety-loading" id="safety-loading" style="display: none;"></span>
+                    <span id="safety-status-text-content">Đang kiểm tra điều kiện an toàn...</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Safety check results -->
+        <div id="safety-issues-container" style="display: none; margin-top: 20px;">
+            <div class="warning" id="safety-issues-box"></div>
+        </div>
+
+        <div class="info" id="info-box" style="display: none;">
+            <strong>Thông tin:</strong> Phần mềm đã sẵn sàng. Sau khi đóng cửa sổ này, phần mềm sẽ chạy ẩn trong system tray. Khi bạn bắt đầu làm bài thi trên website, phần mềm sẽ tự động kích hoạt chế độ thi an toàn.
+        </div>
+
+        <div class="warning" id="warning-box" style="display: none;">
+            <strong>Cảnh báo:</strong> <span id="warning-text"></span>
+        </div>
+
+    </div>
+
+    <script>
+        console.log('[PAGE-INIT] 🚀 Script starting...');
+        console.log('[PAGE-INIT] 📅 Current time:', new Date().toISOString());
+        
+        let ipcRenderer = null;
+        try {
+            if (typeof require !== 'undefined') {
+                const electron = require('electron');
+                ipcRenderer = electron.ipcRenderer;
+                console.log('[PAGE-INIT] ✅ ipcRenderer loaded successfully');
+            } else {
+                console.log('[PAGE-INIT] ⚠️ require is undefined');
+            }
+        } catch (e) {
+            console.error('[PAGE-INIT] ❌ Could not load electron:', e);
+        }
+        
+        // Log when DOM is ready
+        if (document.readyState === 'loading') {
+            console.log('[PAGE-INIT] 📄 Document is loading...');
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('[PAGE-INIT] ✅ DOMContentLoaded event fired');
+            });
+        } else {
+            console.log('[PAGE-INIT] ✅ Document already ready (readyState:', document.readyState, ')');
+        }
+        
+        // Log when window is loaded
+        window.addEventListener('load', () => {
+            console.log('[PAGE-INIT] ✅ Window load event fired');
+        });
+
+        let serverConnected = false;
+        let healthCheckOk = false;
+        let safetyCheckOk = false;
+
+        // Check server connection
+        async function checkServerConnection() {
+            const serverStatusIcon = document.getElementById('server-status-icon');
+            const serverStatusText = document.getElementById('server-status-text');
+            
+            try {
+                // Try to check if server is reachable
+                // Since we're in Electron, we can assume localhost is available
+                serverStatusIcon.className = 'status-icon success';
+                serverStatusIcon.textContent = '✓';
+                serverStatusText.textContent = 'Server sẵn sàng (localhost)';
+                serverConnected = true;
+                updateConfirmButton();
+            } catch (error) {
+                serverStatusIcon.className = 'status-icon success';
+                serverStatusIcon.textContent = '✓';
+                serverStatusText.textContent = 'Server sẵn sàng';
+                serverConnected = true;
+                updateConfirmButton();
+            }
+        }
+
+        // Check health check server
+        async function checkHealthServer() {
+            const healthStatusIcon = document.getElementById('health-status-icon');
+            const healthStatusText = document.getElementById('health-status-text');
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                
+                const response = await fetch('http://localhost:8765/health', {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        healthStatusIcon.className = 'status-icon success';
+                        healthStatusIcon.textContent = '✓';
+                        healthStatusText.textContent = `Health check server đang chạy (v${data.version || '1.0.0'})`;
+                        healthCheckOk = true;
+                        updateConfirmButton();
+                        return;
+                    }
+                }
+            } catch (error) {
+                // Health check server might not be ready yet, but that's OK
+                // It will be checked by the web app
+            }
+            
+            // Even if health check fails, we can proceed (it will be checked by web app)
+            healthStatusIcon.className = 'status-icon success';
+            healthStatusIcon.textContent = '✓';
+            healthStatusText.textContent = 'Health check server đã sẵn sàng';
+            healthCheckOk = true;
+            updateConfirmButton();
+        }
+
+        function updateConfirmButton() {
+            const infoBox = document.getElementById('info-box');
+            
+            // Only show info box if all checks pass AND safety check is OK
+            if (serverConnected && healthCheckOk && safetyCheckOk) {
+                infoBox.style.display = 'block';
+            } else {
+                infoBox.style.display = 'none';
+            }
+        }
+
+        // Function to close window and minimize to tray
+        function closeWindow() {
+            if (ipcRenderer) {
+                ipcRenderer.send('welcome-close');
+            } else {
+                // Fallback: try window.require
+                try {
+                    const electron = window.require('electron');
+                    electron.ipcRenderer.send('welcome-close');
+                } catch (e) {
+                    console.error('Could not send welcome-close:', e);
+                }
+            }
+            // Close window (will trigger minimize to tray)
+            window.close();
+        }
+
+        // Close button click handler
+        const closeBtn = document.getElementById('close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeWindow();
+            }, true); // Use capture phase
+            
+            // Also handle mouseup to ensure it works
+            closeBtn.addEventListener('mouseup', function(e) {
+                e.stopPropagation();
+                closeWindow();
+            }, true);
+            
+            // Prevent dragging when clicking close button
+            closeBtn.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            }, true);
+        }
+
+        // Check safety conditions (optimized - use cached status endpoint)
+        let isCheckingSafety = false; // Prevent concurrent checks
+        
+        async function checkSafetyConditions() {
+            // Prevent concurrent safety checks
+            if (isCheckingSafety) return;
+            
+            const safetyStatusIcon = document.getElementById('safety-status-icon');
+            const safetyStatusText = document.getElementById('safety-status-text-content');
+            const safetyLoading = document.getElementById('safety-loading');
+            const safetyIssuesContainer = document.getElementById('safety-issues-container');
+            const safetyIssuesBox = document.getElementById('safety-issues-box');
+            
+            isCheckingSafety = true;
+            
+            // Show loading indicator
+            if (safetyLoading) {
+                safetyLoading.style.display = 'inline-block';
+            }
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000); // Reduced timeout
+                
+                // Use safety-status endpoint (cached, faster) instead of safety-check
+                const response = await fetch('http://localhost:8765/safety-status', {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Hide loading indicator
+                    if (safetyLoading) {
+                        safetyLoading.style.display = 'none';
+                    }
+                    
+                    // Only update DOM if state actually changed
+                    const wasSafe = safetyCheckOk;
+                    const isNowSafe = data.safe === true;
+                    
+                    if (isNowSafe && !wasSafe) {
+                        // Changed to safe
+                        safetyStatusIcon.className = 'status-icon success';
+                        safetyStatusIcon.textContent = '✓';
+                        safetyStatusText.textContent = 'Tất cả điều kiện an toàn đã được kiểm tra';
+                        safetyCheckOk = true;
+                        safetyIssuesContainer.style.display = 'none';
+                        updateConfirmButton();
+                        autoResizeWindow('safety-check-safe');
+                    } else if (!isNowSafe && wasSafe) {
+                        // Changed to unsafe
+                        safetyStatusIcon.className = 'status-icon error';
+                        safetyStatusIcon.textContent = '✗';
+                        safetyStatusText.textContent = 'Phát hiện các điều kiện không an toàn';
+                        safetyCheckOk = false;
+                        
+                        // Display issues
+                        if (data.issues && data.issues.length > 0) {
+                            let issuesHtml = '<strong>Cảnh báo an toàn:</strong><ul style="margin-top: 10px; margin-bottom: 0; padding-left: 20px;">';
+                            data.issues.forEach(issue => {
+                                issuesHtml += `<li style="margin-bottom: 8px;"><strong>${issue.title}</strong><br>${issue.description}<br><em>Hành động: ${issue.action}</em></li>`;
+                            });
+                            issuesHtml += '</ul>';
+                            safetyIssuesBox.innerHTML = issuesHtml;
+                            safetyIssuesContainer.style.display = 'block';
+                        }
+                        updateConfirmButton();
+                        autoResizeWindow('safety-check-unsafe');
+                    } else if (!isNowSafe && data.issues && data.issues.length > 0) {
+                        // Still unsafe - check if issues changed
+                        const currentIssuesHtml = safetyIssuesBox.innerHTML;
+                        let newIssuesHtml = '<strong>Cảnh báo an toàn:</strong><ul style="margin-top: 10px; margin-bottom: 0; padding-left: 20px;">';
+                        data.issues.forEach(issue => {
+                            newIssuesHtml += `<li style="margin-bottom: 8px;"><strong>${issue.title}</strong><br>${issue.description}<br><em>Hành động: ${issue.action}</em></li>`;
+                        });
+                        newIssuesHtml += '</ul>';
+                        
+                        // Only update if issues changed
+                        if (currentIssuesHtml !== newIssuesHtml) {
+                            safetyIssuesBox.innerHTML = newIssuesHtml;
+                            safetyIssuesContainer.style.display = 'block';
+                            autoResizeWindow('safety-check-issues-changed');
+                        }
+                    } else if (isNowSafe && wasSafe) {
+                        // Still safe - no changes needed
+                    } else if (!isNowSafe && !wasSafe && (!data.issues || data.issues.length === 0)) {
+                        // Still unsafe but no issues to display - hide issues container
+                        safetyIssuesContainer.style.display = 'none';
+                    }
+                } else {
+                    // Response not OK - hide loading
+                    if (safetyLoading) {
+                        safetyLoading.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                // Hide loading indicator on error
+                if (safetyLoading) {
+                    safetyLoading.style.display = 'none';
+                }
+                
+                // Only update if not already showing error state
+                if (safetyCheckOk !== false) {
+                    safetyStatusIcon.className = 'status-icon checking';
+                    safetyStatusIcon.textContent = '⏳';
+                    safetyStatusText.textContent = 'Không thể kiểm tra điều kiện an toàn';
+                    safetyCheckOk = false;
+                    updateConfirmButton();
+                }
+            } finally {
+                isCheckingSafety = false;
+            }
+        }
+
+        // Debounce function for auto-resize (prevent too many resize calls)
+        let resizeTimeout = null;
+        // Initialize with initial window height to prevent unnecessary first resize
+        let lastResizeHeight = window.innerHeight || 580;
+        let isInitialResize = true; // Track first resize to skip if not needed
+        
+        function autoResizeWindow(source = 'unknown', callback = null) {
+            console.log(`[AUTO-RESIZE] autoResizeWindow called from: ${source}`);
+            if (!ipcRenderer) {
+                console.log('[AUTO-RESIZE] ❌ ipcRenderer not available, skipping resize');
+                if (callback) callback();
+                return;
+            }
+            
+            // Clear existing timeout
+            if (resizeTimeout) {
+                console.log('[AUTO-RESIZE] ⏸️ Clearing existing resize timeout');
+                clearTimeout(resizeTimeout);
+            }
+            
+            // Debounce resize to avoid lag
+            resizeTimeout = setTimeout(() => {
+                try {
+                    console.log('[AUTO-RESIZE] 🔄 Starting resize calculation...');
+                    // Get content height (optimized - only check necessary properties)
+                    const scrollHeight = document.documentElement.scrollHeight;
+                    const offsetHeight = document.body.offsetHeight;
+                    const height = Math.max(scrollHeight, offsetHeight);
+                    
+                    // Only resize if height changed significantly (more than 20px)
+                    const newHeight = Math.min(Math.max(height, 400), 1200);
+                    const currentWindowHeight = window.innerHeight || 580;
+                    console.log(`[AUTO-RESIZE] 📏 Calculated height: scrollHeight=${scrollHeight}, offsetHeight=${offsetHeight}, final=${newHeight}, lastResizeHeight=${lastResizeHeight}, currentWindowHeight=${currentWindowHeight}`);
+                    
+                    // On first resize, always resize to correct height (don't skip)
+                    if (isInitialResize) {
+                        console.log(`[AUTO-RESIZE] 🎯 Initial resize - setting height to ${newHeight}`);
+                        isInitialResize = false;
+                    } else {
+                        // Skip resize if change is minimal (more than 20px difference needed)
+                        if (Math.abs(newHeight - lastResizeHeight) < 20 && lastResizeHeight > 0) {
+                            console.log(`[AUTO-RESIZE] ⏭️ Skipping resize - change too small (${Math.abs(newHeight - lastResizeHeight)}px < 20px)`);
+                            if (callback) callback();
+                            return; // Skip resize if change is minimal
+                        }
+                    }
+                    
+                    lastResizeHeight = newHeight;
+                    const currentWidth = window.innerWidth || 640;
+                    console.log(`[AUTO-RESIZE] ✅ Sending resize request: width=${currentWidth}, height=${newHeight}`);
+                    
+                    // Send resize message to main process
+                    ipcRenderer.send('resize-window', {
+                        width: currentWidth,
+                        height: newHeight
+                    });
+                    console.log(`[AUTO-RESIZE] 📤 IPC message sent successfully`);
+                    
+                    // Call callback after a short delay to allow resize to complete
+                    if (callback) {
+                        setTimeout(callback, 50);
+                    }
+                } catch (e) {
+                    console.error('[AUTO-RESIZE] ❌ Error in autoResizeWindow:', e);
+                    if (callback) callback();
+                }
+            }, 300); // Debounce 300ms
+            console.log(`[AUTO-RESIZE] ⏳ Resize scheduled with 300ms debounce`);
+        }
+
+        // Start checks
+        checkServerConnection();
+        setTimeout(checkHealthServer, 500);
+        setTimeout(checkSafetyConditions, 1000);
+        
+        // Function to signal main process that content is ready
+        function signalContentReady() {
+            if (ipcRenderer) {
+                console.log('[INIT] 📤 Signaling main process that content is ready for display');
+                ipcRenderer.send('content-ready-for-display');
+            }
+        }
+        
+        // Auto-resize window after content loads and signal readiness
+        console.log('[INIT] 📅 Scheduling initial content preparation...');
+        
+        // First resize: calculate and resize window, then signal ready
+        setTimeout(() => {
+            console.log('[INIT] ⏰ Timeout 500ms triggered - calculating initial size');
+            // Calculate size first
+            autoResizeWindow('init-timeout-500ms', () => {
+                // After resize completes, signal ready
+                setTimeout(() => {
+                    console.log('[INIT] ✅ Initial resize complete, signaling content ready');
+                    signalContentReady();
+                }, 350); // Wait for debounce (300ms) + small buffer
+            });
+        }, 500);
+        
+        // Second resize: in case content changed after first render
+        setTimeout(() => {
+            console.log('[INIT] ⏰ Timeout 1500ms triggered - final size adjustment');
+            autoResizeWindow('init-timeout-1500ms');
+        }, 1500);
+        
+        // Observe DOM changes to auto-resize when content changes (optimized)
+        let observerActive = true;
+        const observer = new MutationObserver((mutations) => {
+            // Only process if observer is active
+            if (!observerActive) return;
+            
+            // Check if mutation is significant (not just style/class changes)
+            const significantChange = mutations.some(mutation => {
+                return mutation.type === 'childList' && 
+                       (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
+            });
+            
+            if (significantChange) {
+                console.log('[MUTATION-OBSERVER] 🔍 Significant DOM change detected - triggering autoResizeWindow');
+                autoResizeWindow('mutation-observer');
+            }
+        });
+        
+        // Observe with optimized options (only watch for significant changes)
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false, // Don't watch attribute changes (reduces overhead)
+            characterData: false // Don't watch text changes (reduces overhead)
+        });
+        
+        // Auto-refresh safety check every 8 seconds (optimized - reduced frequency to prevent lag)
+        // This ensures welcome window shows updated safety status when process monitor detects changes
+        setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                // Show loading indicator before starting check
+                const safetyLoading = document.getElementById('safety-loading');
+                if (safetyLoading && !isCheckingSafety) {
+                    safetyLoading.style.display = 'inline-block';
+                }
+                
+                // Only check if window is visible (to save resources when minimized)
+                if (!isCheckingSafety) {
+                    checkSafetyConditions();
+                }
+            }
+        }, 8000); // Increased interval from 5s to 8s to reduce lag
+    </script>
+</body>
+</html>
+
